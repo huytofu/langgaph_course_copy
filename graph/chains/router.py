@@ -13,21 +13,22 @@ class RouteQuery(BaseModel):
         ...,
         description="Given a user question choose to route it to web search or a vectorstore.",
     )
+
+class RouteVectorstore(BaseModel):
+    """Route a user query to the most relevant vectorstore."""
+
     is_anime: bool = Field(
         ...,
-        description="Whether the question is about anime.",
+        description="Given a user question determine whether the question is about anime.",
     )
-
 
 # llm = ChatOpenAI(temperature=0)
 llm = ChatOllama(model="llama3.1:70b", temperature=0)
 structured_llm_router = llm.with_structured_output(RouteQuery)
 
 system = """You are an expert at routing a user question to a vectorstore or web search.
-There are two vectorstores. One vectorstore contains documents related to agents, prompt engineering, and adversarial attacks.
-The other vectorstore contains documents related to anime. 
-Use the vectorstore for questions on these topics. For all else, use web-search.
-You should also conlude if the question is related to anime or not. 
+The vectorstore contains documents related to agents, prompt engineering, adversarial attacks or anime. 
+Use the vectorstore for questions on these topics. For all else, use web-search. 
 """
 route_prompt = ChatPromptTemplate.from_messages(
     [
@@ -37,3 +38,15 @@ route_prompt = ChatPromptTemplate.from_messages(
 )
 
 question_router = route_prompt | structured_llm_router
+
+structured_llm_router2 = llm.with_structured_output(RouteVectorstore)
+system2 = """You are an expert at determining if a user question is related to anime or not. Answer in 'yes' or 'no'.
+"""
+vectorstore_prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", system2),
+        ("human", "{question}"),
+    ]
+)
+
+vectorstore_router = vectorstore_prompt | structured_llm_router2

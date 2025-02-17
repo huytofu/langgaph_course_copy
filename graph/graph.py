@@ -5,7 +5,7 @@ from langgraph.graph import END, StateGraph
 
 from graph.chains.answer_grader import answer_grader, GradeAnswer
 from graph.chains.hallucination_grader import hallucination_grader, GradeHallucinations
-from graph.chains.router import question_router, RouteQuery
+from graph.chains.router import question_router, vectorstore_router, RouteQuery, RouteVectorstore
 from graph.consts import GENERATE, GRADE_DOCUMENTS, RETRIEVE, RETRIEVE_ANIME, WEBSEARCH
 from graph.nodes import generate, grade_documents, retrieve, retrieve_anime, web_search
 from graph.state import GraphState
@@ -62,6 +62,7 @@ def route_question(state: GraphState) -> str:
         return WEBSEARCH
     elif source.datasource == "vectorstore":
         print("---ROUTE QUESTION TO RAG---")
+        source: RouteVectorstore = vectorstore_router.invoke({"question": question})
         if source.is_anime:
             print("---RETRIEVE DOCUMENTS FROM ANIME DATABASE---")
             return RETRIEVE_ANIME
