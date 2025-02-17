@@ -3,8 +3,8 @@ from langgraph.checkpoint.memory import MemorySaver
 # from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import END, StateGraph
 
-from graph.chains.answer_grader import answer_grader
-from graph.chains.hallucination_grader import hallucination_grader
+from graph.chains.answer_grader import answer_grader, GradeAnswer
+from graph.chains.hallucination_grader import hallucination_grader, GradeHallucinations
 from graph.chains.router import question_router, RouteQuery
 from graph.consts import GENERATE, GRADE_DOCUMENTS, RETRIEVE, RETRIEVE_ANIME, WEBSEARCH
 from graph.nodes import generate, grade_documents, retrieve, retrieve_anime, web_search
@@ -34,14 +34,14 @@ def grade_generation_grounded_in_documents_and_question(state: GraphState) -> st
     documents = state["documents"]
     generation = state["generation"]
 
-    score = hallucination_grader.invoke(
+    score: GradeHallucinations = hallucination_grader.invoke(
         {"documents": documents, "generation": generation}
     )
 
     if hallucination_grade := score.binary_score:
         print("---DECISION: GENERATION IS GROUNDED IN DOCUMENTS---")
         print("---GRADE GENERATION vs QUESTION---")
-        score = answer_grader.invoke({"question": question, "generation": generation})
+        score: GradeAnswer = answer_grader.invoke({"question": question, "generation": generation})
         if answer_grade := score.binary_score:
             print("---DECISION: GENERATION ADDRESSES QUESTION---")
             return "useful"
