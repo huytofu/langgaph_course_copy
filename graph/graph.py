@@ -1,17 +1,17 @@
 from dotenv import load_dotenv
 from langgraph.checkpoint.memory import MemorySaver
-from langgraph.checkpoint.sqlite import SqliteSaver
+# from langgraph.checkpoint.sqlite import SqliteSaver
 from langgraph.graph import END, StateGraph
 
 from graph.chains.answer_grader import answer_grader
 from graph.chains.hallucination_grader import hallucination_grader
 from graph.chains.router import question_router, RouteQuery
-from graph.consts import GENERATE, GRADE_DOCUMENTS, RETRIEVE, WEBSEARCH
-from graph.nodes import generate, grade_documents, retrieve, web_search
+from graph.consts import GENERATE, GRADE_DOCUMENTS, RETRIEVE, RETRIEVE_ANIME, WEBSEARCH
+from graph.nodes import generate, grade_documents, retrieve, retrieve_anime, web_search
 from graph.state import GraphState
 
 load_dotenv()
-memory = SqliteSaver.from_conn_string(":memory:")
+# memory = SqliteSaver.from_conn_string(":memory:")
 memory = MemorySaver()
 
 
@@ -62,11 +62,15 @@ def route_question(state: GraphState) -> str:
         return WEBSEARCH
     elif source.datasource == "vectorstore":
         print("---ROUTE QUESTION TO RAG---")
+        if source.is_anime:
+            print("---RETRIEVE DOCUMENTS FROM ANIME DATABASE---")
+            return RETRIEVE_ANIME
         return RETRIEVE
 
 
 workflow = StateGraph(GraphState)
 workflow.add_node(RETRIEVE, retrieve)
+workflow.add_node(RETRIEVE_ANIME, retrieve_anime)
 workflow.add_node(GRADE_DOCUMENTS, grade_documents)
 workflow.add_node(GENERATE, generate)
 workflow.add_node(WEBSEARCH, web_search)
@@ -77,9 +81,11 @@ workflow.set_conditional_entry_point(
     {
         WEBSEARCH: WEBSEARCH,
         RETRIEVE: RETRIEVE,
+        RETRIEVE_ANIME: RETRIEVE_ANIME,
     },
 )
 workflow.add_edge(RETRIEVE, GRADE_DOCUMENTS)
+workflow.add_edge(RETRIEVE_ANIME, GRADE_DOCUMENTS)
 workflow.add_conditional_edges(
     GRADE_DOCUMENTS,
     decide_to_generate,

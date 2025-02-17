@@ -1,4 +1,5 @@
 RETRIEVE = "retrieve"
+RETRIEVE_ANIME = "retrieve_anime"
 GRADE_DOCUMENTS = "grade_documents"
 GENERATE = "generate"
 WEBSEARCH = "websearch"

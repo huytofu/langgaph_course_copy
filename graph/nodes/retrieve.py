@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from graph.state import GraphState
-from ingestion import retriever
+from ingestion import retriever, retriever_anime
 
 
 def retrieve(state: GraphState) -> Dict[str, Any]:
@@ -9,4 +9,11 @@ def retrieve(state: GraphState) -> Dict[str, Any]:
     question = state["question"]
 
     documents = retriever.invoke(question)
+    return {"documents": documents, "question": question}
+
+def retrieve_anime(state: GraphState) -> Dict[str, Any]:
+    print("---RETRIEVE ANIME---")
+    question = state["question"]
+
+    documents = retriever_anime.invoke(question)
     return {"documents": documents, "question": question}
