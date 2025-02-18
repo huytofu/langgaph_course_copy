@@ -55,7 +55,7 @@ def grade_generation_grounded_in_documents_and_question(state: GraphState) -> st
             return "not useful"
     else:
         print("---DECISION: GENERATION IS NOT GROUNDED IN DOCUMENTS, RE-TRY---")
-        if state["retry_count"] < 5:
+        if state["retry_count"] < 3:
             return "not supported"
         print("---DECISION: TOO MANY RETRIES, I AM GONNA END THIS MISERY---")
         return "end_misery"
