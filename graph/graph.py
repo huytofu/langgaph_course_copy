@@ -35,7 +35,7 @@ def grade_generation_grounded_in_documents_and_question(state: GraphState) -> st
     generation = state["generation"]
 
     score: GradeHallucinations = hallucination_grader.invoke(
-        {"documents": documents, "generation": generation}
+        {"documents": "\n\n".join([doc.page_content for doc in documents]) , "generation": generation}
     )
 
     if hallucination_grade := score.binary_score:
