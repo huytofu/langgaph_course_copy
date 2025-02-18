@@ -33,15 +33,20 @@ def grade_generation_grounded_in_documents_and_question(state: GraphState) -> st
     question = state["question"]
     documents = state["documents"]
     generation = state["generation"]
+    score = {}
 
-    score: GradeHallucinations = hallucination_grader.invoke(
-        {"documents": "\n\n".join([doc.page_content for doc in documents]) , "generation": generation}
-    )
+    while not hasattr(score, "binary_score"):
+        score: GradeHallucinations = hallucination_grader.invoke(
+            {"documents": "\n\n".join([doc.page_content for doc in documents]) , "generation": generation}
+        )
 
     if hallucination_grade := score.binary_score:
         print("---DECISION: GENERATION IS GROUNDED IN DOCUMENTS---")
         print("---GRADE GENERATION vs QUESTION---")
-        score: GradeAnswer = answer_grader.invoke({"question": question, "generation": generation})
+        score = {}
+        while not hasattr(score, "binary_score"):
+            score: GradeAnswer = answer_grader.invoke({"question": question, "generation": generation})
+        
         if answer_grade := score.binary_score:
             print("---DECISION: GENERATION ADDRESSES QUESTION---")
             return "useful"
