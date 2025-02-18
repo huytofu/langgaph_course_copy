@@ -25,3 +25,6 @@ answer_prompt = ChatPromptTemplate.from_messages(
 )
 
 answer_grader: RunnableSequence = answer_prompt | structured_llm_grader
+answer_grader.with_fallbacks(
+    [answer_grader]
+)

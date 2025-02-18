@@ -15,4 +15,5 @@ class GraphState(TypedDict):
     question: str
     generation: str
     web_search: bool
+    retry_count: int
     documents: List[str]

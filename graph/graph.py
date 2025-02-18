@@ -50,7 +50,10 @@ def grade_generation_grounded_in_documents_and_question(state: GraphState) -> st
             return "not useful"
     else:
         print("---DECISION: GENERATION IS NOT GROUNDED IN DOCUMENTS, RE-TRY---")
-        return "not supported"
+        if state["retry_count"] < 5:
+            return "not supported"
+        print("---DECISION: TOO MANY RETRIES, I AM GONNA END THIS MISERY---")
+        return "end_misery"
 
 
 def route_question(state: GraphState) -> str:
@@ -101,6 +104,7 @@ workflow.add_conditional_edges(
     grade_generation_grounded_in_documents_and_question,
     {
         "not supported": GENERATE,
+        "end_misery": END,
         "useful": END,
         "not useful": WEBSEARCH,
     },
