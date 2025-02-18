@@ -39,6 +39,6 @@ retriever = Chroma(
 
 retriever_anime = PineconeVectorStore(
     index_name='firecrawl-index', 
-    embedding=OllamaEmbeddings(model="llama3.1:70b")
+    embedding=OllamaEmbeddings(model="llama3.1")
 ).as_retriever()
 
