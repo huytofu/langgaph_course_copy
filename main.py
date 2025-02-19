@@ -6,7 +6,7 @@ from pprint import pprint
 from graph.graph import app
 
 question1 = "What are the types of agent memory?"
-inputs = {"question": question1}
+inputs = {"question": question1, "documents": [], "retry_count": 0}
 
 for output in app.stream(inputs, config={"configurable": {"thread_id": "2"}}):
     for key, value in output.items():

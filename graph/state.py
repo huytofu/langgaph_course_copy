@@ -9,6 +9,7 @@ class GraphState(TypedDict):
         question: question
         generation: LLM generation
         web_search: whether to add search
+        retry_count: number of retries
         documents: list of documents
     """
 
