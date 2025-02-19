@@ -2,9 +2,7 @@ from typing import Literal
 
 from langchain_core.prompts import ChatPromptTemplate
 from pydantic import BaseModel, Field
-# from langchain_openai import ChatOpenAI
-from langchain_ollama import ChatOllama
-
+from graph.models.chat import llm
 
 class RouteQuery(BaseModel):
     """Route a user query to the most relevant datasource."""
@@ -22,8 +20,6 @@ class RouteVectorstore(BaseModel):
         description="Given a user question determine whether the question is about anime.",
     )
 
-# llm = ChatOpenAI(temperature=0)
-llm = ChatOllama(model="llama3.1:70b", temperature=0)
 structured_llm_router = llm.with_structured_output(RouteQuery)
 
 system = """You are an expert at routing a user question to a vectorstore or web search.
