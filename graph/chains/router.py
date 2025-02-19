@@ -24,7 +24,8 @@ structured_llm_router = llm.with_structured_output(RouteQuery)
 
 system = """You are an expert at routing a user question to a vectorstore or web search.
 The vectorstore contains documents related to agents, prompt engineering, adversarial attacks or anime. 
-Use the vectorstore for questions on these topics. For all else, use web-search. 
+Use the vectorstore for questions on these topics. For all else, use web-search.
+Your answer should be "vectorstore" or "websearch" only.
 """
 route_prompt = ChatPromptTemplate.from_messages(
     [
