@@ -9,7 +9,7 @@ from graph.chains.generation import generation_chain
 from graph.chains.hallucination_grader import GradeHallucinations, hallucination_grader
 from graph.chains.retrieval_grader import GradeDocuments, retrieval_grader
 from graph.chains.router import RouteQuery, question_router
-from retrievers import retriever, retriever_anime
+from graph.retrievers import retriever, retriever_anime
 
 
 def test_generation_chain() -> None:

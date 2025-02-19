@@ -1,7 +1,7 @@
 from typing import Any, Dict
 
 from graph.state import GraphState
-from retrievers import retriever, retriever_anime
+from graph.retrievers import retriever, retriever_anime
 
 
 def retrieve(state: GraphState) -> Dict[str, Any]:
