@@ -2,4 +2,4 @@
 from langchain_ollama import OllamaEmbeddings
 
 # embeddings = OpenAIEmbeddings()
-embeddings = OllamaEmbeddings(model="llama3.1")
+embeddings = OllamaEmbeddings(model="deepseek-r1:70b")
